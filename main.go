@@ -9,15 +9,35 @@ import (
 	"os"
 )
 
-var testImagePath = "testdata/test_normal.jpg"
+var testImagePath = "testdata/test_normal.png"
+var testImageCheckPath = "testdata/test_normal_check.png"
 var testShufflePath = "testdata/test_shuffle.png"
 var testUnshufflePath = "testdata/test_unshuffle.png"
 
 func main() {
+	check()
+
 	loadAndShuffle()
 	loadAndUnshuffle()
 	// loadAndShuffleTwice()
 	// loadAndUnshuffleTwice()
+}
+
+func check() {
+	img, err := loadImage(testImagePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	writer, err := os.Create(testImageCheckPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer writer.Close()
+
+	err = png.Encode(writer, img)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func loadAndShuffle() {
@@ -141,11 +161,11 @@ func rotate(inputImage *image.RGBA) *image.RGBA {
 func writeBoundary(width, height int, inputImage, outputImage *image.RGBA) {
 	for x := range width {
 		outputImage.Set(x, 0, inputImage.At(x, 0))
-		outputImage.Set(x, height-1, inputImage.At(x, height-1))
+		// outputImage.Set(x, height-1, inputImage.At(x, height-1))
 	}
 	for y := range height {
 		outputImage.Set(0, y, inputImage.At(0, y))
-		outputImage.Set(width-1, y, inputImage.At(width-1, y))
+		// outputImage.Set(width-1, y, inputImage.At(width-1, y))
 	}
 }
 
@@ -158,9 +178,8 @@ func shuffle(inputImage *image.RGBA, direction string) (*image.RGBA, error) {
 
 	writeBoundary(width, height, inputImage, outputImage)
 
-	for y := 0; y < height-1; y++ {
+	for y := 1; y < height; y++ {
 		c := inputImage.At(0, y)
-		outputImage.Set(0, y, c)
 		r, g, b, _ := c.RGBA()
 		xShift := int(r + g + b)
 
@@ -175,20 +194,32 @@ func shuffle(inputImage *image.RGBA, direction string) (*image.RGBA, error) {
 	return outputImage, nil
 }
 
-func shiftForwards(y, xShift, width int, inputImage *image.RGBA, outputImage *image.RGBA) {
-	for x := 1; x < width-1; x++ {
+func shiftForwards(y, xShift, width int, inputImage, outputImage *image.RGBA) {
+	for x := 1; x < width; x++ {
 		newX := x + xShift
-		for newX > width {
+		if newX == 0 {
+			panic("OH OH!")
+		}
+		for newX >= width {
 			newX -= width
+		}
+		if newX < 0 {
+			panic("OH OH!")
 		}
 		outputImage.Set(x, y, inputImage.At(newX, y))
 	}
 }
-func shiftBackwards(y, xShift, width int, inputImage *image.RGBA, outputImage *image.RGBA) {
+func shiftBackwards(y, xShift, width int, inputImage, outputImage *image.RGBA) {
 	for x := 1; x < width-1; x++ {
 		newX := x - xShift
+		if newX == 0 {
+			panic("OH OH!")
+		}
 		for newX < 0 {
 			newX += width
+		}
+		if newX >= width {
+			panic("OH OH!")
 		}
 		outputImage.Set(x, y, inputImage.At(newX, y))
 	}
