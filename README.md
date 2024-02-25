@@ -49,3 +49,6 @@ To unshuffle an image, run: `anonimage --unshuffle --input testdata/burger_shuff
 chunks. While iterating the pixels, they are put into different chunks. For example:
 Pixel 1 is put at the first chunks first position. Pixel 2 is put at the second chunks
 first position. After reaching the last chunk, it starts back in chunk 1.
+
+Since image compression would get in the way of the algorithm, the **png** image format
+is used instead of **jpg**.
