@@ -7,5 +7,6 @@ var testShufflePath = "testdata/test_shuffle.png"
 var testUnshufflePath = "testdata/test_unshuffle.png"
 
 func main() {
-	shuffle.Process(testImagePath, testShufflePath)
+	shuffle.Process(testImagePath, testShufflePath, "shuffle")
+	shuffle.Process(testShufflePath, testUnshufflePath, "unshuffle")
 }

@@ -10,13 +10,13 @@ type Image1D struct {
 	Height int
 }
 
-func Process(inputPath, outputPath string) error {
+func Process(inputPath, outputPath string, mode string) error {
 	inputImage, err := loadImage1D(inputPath)
 	if err != nil {
 		return err
 	}
 
-	outputImage, err := shuffle(inputImage)
+	outputImage, err := shuffle(inputImage, mode)
 	if err != nil {
 		return err
 	}

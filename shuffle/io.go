@@ -49,6 +49,7 @@ func writeImage1D(image1d Image1D, outputPath string) error {
 
 	for y := range image1d.Height {
 		for x := range image1d.Width {
+			// fmt.Println(y*image1d.Width + x)
 			tempImage.Set(x, y, image1d.Pixels[y*image1d.Width+x])
 		}
 	}
