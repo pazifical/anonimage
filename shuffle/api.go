@@ -4,14 +4,14 @@ import (
 	"image/color"
 )
 
-type Image1D struct {
+type image1D struct {
 	Pixels []color.Color
 	Width  int
 	Height int
 }
 
 func Process(inputPath, outputPath string, mode string) error {
-	inputImage, err := loadImage1D(inputPath)
+	inputImage, err := loadFromFile(inputPath)
 	if err != nil {
 		return err
 	}
@@ -21,7 +21,7 @@ func Process(inputPath, outputPath string, mode string) error {
 		return err
 	}
 
-	err = writeImage1D(outputImage, outputPath)
+	err = writeToFile(outputImage, outputPath)
 	if err != nil {
 		return err
 	}

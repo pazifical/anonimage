@@ -1,20 +1,22 @@
 package shuffle
 
 import (
+	"fmt"
 	"image/color"
 )
 
 func calculateChunks(width, height int) int {
 	pixelCount := width * height
-	minChunks := 100
+	minChunks := int(pixelCount / 10)
 	nChunks := minChunks
-	for pixelCount%minChunks != 0 {
+	for pixelCount%nChunks != 0 {
 		nChunks += 1
 	}
+	fmt.Printf("INFO: Using %d chunks\n", nChunks)
 	return nChunks
 }
 
-func shuffle(inputImage Image1D, mode string) (Image1D, error) {
+func shuffle(inputImage image1D, mode string) (image1D, error) {
 	nChunks := calculateChunks(inputImage.Width, inputImage.Height)
 	pixelCount := inputImage.Width * inputImage.Height
 	chunkSize := pixelCount / nChunks
@@ -24,7 +26,7 @@ func shuffle(inputImage Image1D, mode string) (Image1D, error) {
 		startPositions[i] = i * chunkSize
 	}
 
-	outputImage := Image1D{
+	outputImage := image1D{
 		Pixels: make([]color.Color, pixelCount),
 		Width:  inputImage.Width,
 		Height: inputImage.Height,
